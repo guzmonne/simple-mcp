@@ -1,0 +1,108 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+        <link rel="stylesheet" href="css/vendor/bootstrap.flatly.css">
+        <link rel="stylesheet" href="css/vendor/icomoon.css">
+        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/login.css">
+
+        <script src="js/vendor/html5-3.6-respond-1.4.2.min.js"></script>
+    </head>
+    <body>
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <div class="outer">
+        	<div class="Container inner">
+        		<div class="Container__hero">
+        			<div class="Container__center-box">
+				        <div class="Container__fluid container">
+				          <div class="Login">
+				            <div class="row text-center Login__image">
+				              <div class="col-xs-12">
+				                <img src="./images/tata_logo_fill.png" class="img-responsive" alt="Tata Logo">
+				              </div>
+				            </div>
+				            <div class="row Login__social">
+				              <div class="col-xs-12">
+				                <p>
+				                  Inicie su sesión con su red social preferida.
+				                </p>
+				                <div class="SocialIcons">
+				                  <a href="https://kvmveb8o06.execute-api.us-east-1.amazonaws.com/dev/authentication/signin/facebook" class="Login__social-icon">
+				                    <div class="icon-container facebook eclipse">
+				                      <i class="icon icon-facebook"></i>
+				                    </div>
+				                  </a>
+				                  <a href="https://kvmveb8o06.execute-api.us-east-1.amazonaws.com/dev/authentication/signin/google" class="Login__social-icon">
+				                    <div class="icon-container google eclipse">
+				                      <i class="icon icon-google"></i>
+				                    </div>
+				                  </a>
+				                </div>
+				              </div>
+				            </div>
+				            <div class="row Login__Form-row">
+				              <div class="col-xs-12">
+				                <p>... o ingrese sus datos.</p>
+				                <div class="Login__form-column col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+				                  <form class="Login__form">
+				                    <div class="row clearfix">
+				                      <div class="col-xs-12 col-sm-6 col-md-6">
+				                        <div class="form-group">
+				                          <div class="control-label">
+				                            Email
+				                          </div>
+				                          <div class="controls">
+				                            <input  type="email" placeholder="Email" class="form-control input-lg" />
+				                          </div>
+				                        </div>
+				                      </div>
+				                      <div class="col-xs-12 col-sm-6 col-md-6">
+				                        <div class="form-group">
+				                          <div class="control-label">
+				                            Contraseña
+				                          </div>
+				                          <div class="controls">
+				                            <input  type="password" placeholder="Contraseña" class="form-control input-lg" />
+				                          </div>
+				                        </div>
+				                      </div>
+				                      <div class="col-xs-12">
+				                      	<button class="btn btn-red btn-block" type="submit">Iniciar Sesión</button>
+				                      	<a href="#" class="text-red Login__new-user">Crear nuevo usuario</a>
+				                      </div>
+				                    </div>
+				                  </form>
+				                </div> 
+				              </div>
+				            </div>
+				          </div>
+				        </div>
+        			</div>
+        		</div>
+        	</div>
+        </div>
+        <script src="js/login.js"></script>
+
+        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+        <script>
+            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+            e.src='//www.google-analytics.com/analytics.js';
+            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+            ga('create','UA-XXXXX-X','auto');ga('send','pageview');
+        </script>
+    </body>
+</html>

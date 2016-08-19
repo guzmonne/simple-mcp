@@ -1,0 +1,14 @@
+.Authorizing {
+	position: relative;
+}
+
+	.Authorizing .Authorizing__text {
+		text-align: center;
+	}
+
+	.Authorizing .icon-container {
+		margin-top: -15px;
+		float: none;
+		display: inline-block;
+	}	
+/*# sourceMappingURL=authorizing.css.map */

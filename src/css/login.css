@@ -1,0 +1,44 @@
+/**
+ * Login
+ */
+.Login {
+
+}
+
+	.Login .Login__form {
+		padding-top: 10px;
+	}
+
+		.Login .Login__form .control-label {
+			display: none;
+		}
+
+	.Login .Login__social {
+		margin-top: 20px;
+	}
+
+		.Login .Login__social .icon-container {
+			margin: 0 auto;
+			float: none;
+			display: inline-block;
+			margin-left: 15px;
+		}
+
+	.Login .Login__social-icon {
+		opacity: 0.7;
+		transition: all 0.5s;
+	}
+
+	.Login .Login__social-icon:hover {
+		opacity: 1;
+	}
+
+	.Login img {
+		margin: 0 auto;
+	}
+
+	.Login .Login__new-user {
+		margin-top: 10px;
+		display: block;
+		text-decoration: underline;
+	}
