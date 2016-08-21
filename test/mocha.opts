@@ -1,0 +1,8 @@
+--reporter spec
+--ui tdd
+--colors
+--recursive
+--no-exit
+--require mocha-clean
+--require jsdom-global/register
+--watch

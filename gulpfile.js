@@ -6,6 +6,8 @@ const postcss = require('gulp-postcss')
 const autoprefixer = require('autoprefixer')
 const babel = require('gulp-babel')
 const eslint = require('gulp-eslint')
+const shell = require('gulp-shell')
+const mocha = require('gulp-spawn-mocha')
 
 const jsFiles = [
 	'./src/js/**/*.js',
@@ -24,6 +26,12 @@ const baseFiles = [
 const cssFiles = [
 	'./src/css/**/*.css',
 	'!./src/css/vendor/**/*.css',
+]
+const testFiles = [
+	'./test/*spec.js',
+]
+const testAllFiles = [
+	'./test/*.js',
 ]
 const defaultOptions = {base: './src/'}
 
@@ -84,6 +92,19 @@ gulp.task('serve', () =>
 		}))
 )
 /**
+ * Task: test
+ * -------------
+ * Run mocha tests
+ */
+gulp.task('test', () => {
+	try {
+		gulp.src(testFiles, defaultOptions)
+			.pipe(mocha())
+	} catch (err) {
+		console.log(err)
+	}
+})
+/**
  * Task: watch
  * -------------
  * Watch the appropiate files and run its appropiate tasks
@@ -108,4 +129,4 @@ gulp.task('lint', () =>
  * -------------
  * Run all the tasks and watch
  */
-gulp.task('default', ['copy', 'autoprefix', 'babel', 'lint', 'serve', 'watch'])
+gulp.task('default', ['copy', 'autoprefix', 'babel', 'lint', 'serve', 'test', 'watch'])
