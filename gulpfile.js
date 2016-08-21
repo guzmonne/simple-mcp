@@ -8,6 +8,8 @@ const babel = require('gulp-babel')
 const eslint = require('gulp-eslint')
 const shell = require('gulp-shell')
 const mocha = require('gulp-spawn-mocha')
+const concat = require('gulp-concat')
+const uglify = require('gulp-uglify')
 
 const jsFiles = [
 	'./src/js/**/*.js',
@@ -33,6 +35,10 @@ const testFiles = [
 const testAllFiles = [
 	'./test/*.js',
 ]
+const jsVendorFiles = [
+	'./src/vendor/fetch/fetch.js',
+	'./src/vendor/es6-promise/es6-promise.js',
+]
 const defaultOptions = {base: './src/'}
 
 /**
@@ -42,6 +48,19 @@ const defaultOptions = {base: './src/'}
  */
 gulp.task('copy', () => 
 	gulp.src(baseFiles, defaultOptions)
+		.pipe(gulp.dest('dist'))
+)
+/**
+ * Task: vendor
+ * ------------
+ * Concat and uglify vendor files
+ */
+gulp.task('vendor:js', () => 
+	gulp.src(jsVendorFiles, defaultOptions)
+		.pipe(sourcemaps.init())
+		.pipe(concat('js/vendor.js'))
+		.pipe(uglify())
+		.pipe(sourcemaps.write('.'))
 		.pipe(gulp.dest('dist'))
 )
 /**
@@ -113,6 +132,7 @@ gulp.task('watch', () => {
 	gulp.watch(baseFiles, ['copy'])
 	gulp.watch(cssFiles, ['autoprefix'])
 	gulp.watch(jsFiles, ['lint', 'babel'])
+	gulp.watch(jsVendorFiles, ['vendor:js'])
 })
 /**
  * Task: lint
@@ -129,4 +149,12 @@ gulp.task('lint', () =>
  * -------------
  * Run all the tasks and watch
  */
-gulp.task('default', ['copy', 'autoprefix', 'babel', 'lint', 'serve', 'watch'])
+gulp.task('default', [
+	'copy',
+	'autoprefix',
+	'babel',
+	'lint',
+	'serve',
+	'vendor:js',
+	'watch',
+])

@@ -1,0 +1,23 @@
+{
+  "name": "simple-mcp",
+  "description": "Simple web pages to handle captive portal authentication",
+  "main": "./src/app.js",
+  "authors": [
+    "Guzman Monne <gmonne@gmail.com>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "AWS",
+    "WiFi"
+  ],
+  "homepage": "https://github.com/guzmonne/simple-mcp",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "vendor",
+    "test",
+    "tests"
+  ]
+}
