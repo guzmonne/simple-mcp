@@ -129,4 +129,4 @@ gulp.task('lint', () =>
  * -------------
  * Run all the tasks and watch
  */
-gulp.task('default', ['copy', 'autoprefix', 'babel', 'lint', 'serve', 'test', 'watch'])
+gulp.task('default', ['copy', 'autoprefix', 'babel', 'lint', 'serve', 'watch'])
