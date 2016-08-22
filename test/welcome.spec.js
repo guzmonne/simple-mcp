@@ -1,8 +1,21 @@
 var rewire = require('rewire')
 var expect = require('chai').expect
 
+global.fetch = () => new Promise((resolve, reject) => {
+	resolve({
+		status: 200,
+		statusText: 'ok',
+		json: () => ({
+			email: 'test@example.com',
+			name: 'Test Me',
+			picture: 'http://placehold.it/50x50',
+		})
+	})
+})
+
 const welcome = rewire('../dist/js/welcome.js')
 const addClass = welcome.__get__('addClass')
+const removeClass = welcome.__get__('removeClass')
 const getElementsById = welcome.__get__('getElementsById')
 const getParameters = welcome.__get__('getParameters')
 const getParameterByName = welcome.__get__('getParameterByName')
@@ -45,6 +58,39 @@ suite('welcome.js', function(){
 
 		test('should not throw if "element" is undefined', function(){
 			expect(addClass(undefined)).to.not.throw
+		})
+	})
+
+	suite('#removeClass(element, className)', function(){
+		let element
+		setup(function(){
+			element = document.createElement('div')
+			element.classList.add('a-class')			
+		})
+
+		teardown(function(){
+			element = undefined
+		})
+
+		test('should return undefined if an element is not provided', function(){
+			expect(removeClass()).to.be.undefined
+		})
+
+		test('should do nothing if a className is not provided', function(){
+			const expected = element.className
+			removeClass(element)
+			const actual = element.className
+			expect(actual).to.equal(expected)
+		})
+
+		test('should do nothing if the class is not defined on the elemet', function(){
+			expect(removeClass(element, 'another-class')).to.not.throw
+		})
+
+		test('should remove a class if found on the element', function(){
+			expect(element.className).to.equal('a-class')
+			removeClass(element, 'a-class')
+			expect(element.className).to.equal('')
 		})
 	})
 
@@ -97,10 +143,6 @@ suite('welcome.js', function(){
 			expect(getParameters.bind(this)).to.throw(errorMsg)
 			expect(getParameters.bind(this, parametersList)).to.throw(errorMsg)
 			expect(getParameters.bind(this, undefined, href)).to.throw(errorMsg)
-		})
-
-		test('should throw if href is not a proper url', function(){
-			expect(getParameters.bind(this, parametersList, 'I am not a url')).to.throw('href is not a url')
 		})
 
 		test('should return an object with its keys matching the parameters list', function(){

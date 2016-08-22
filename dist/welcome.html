@@ -31,7 +31,7 @@
 				        <div class="Container__fluid container">
 				          
 									<!-- Welcome -->
-									<div id="welcome" className="Welcome">
+									<div id="welcome" class="Welcome hidden">
 										<!-- Logo -->
 										<div class="row text-center Login__image">
 				              <div class="col-xs-12">
@@ -44,10 +44,11 @@
 												<h3>Bienvenido</h3>
 												<img 
 													src="http://placehold.it/50x50"
+													id="profilePicture"
 													alt="profile picture"
-													className="img-circle Welcome__profile-picture"
+													class="img-circle Welcome__profile-picture"
 												/>
-												<h4>Profile Name</h4>
+												<h4 id="profileName">Profile Name</h4>
 											</div>
 										</div>
 
@@ -64,19 +65,36 @@
 									
 									<!-- Authorizing -->
 									<div id="authorizing" class="Authorizing">
-										<h3 style={{opacity: 0.5}}>Autorizando</h3>
+										<h3>Autorizando</h3>
 										<div class="loading-container">
 											<div class="loading"></div>
 											<div id="loading-text">
 												<a href="javascript:void(0);">
     	                    <div id="iconContainer" class="icon-container eclipse">
-    	                      <i id="icon" class="icon"></i>
+    	                      <i id="icon" class="icon icon-wifi"></i>
     	                    </div>
     	                  </a>
 											</div>
 										</div>
 									</div>
 									<!-- /Authorizing -->
+
+									<!-- ErrorMessage -->
+									<div id="errorMessage" class="ErrorMessage hidden">
+										<div class="row">
+											<div class="col-xs-12">
+												<h3>¡Error!</h3>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-xs-12">
+												<a href="http://www.tata.com.uy/" class="btn btn-danger">
+													Continuar hacia Internet
+												</a>
+											</div>
+										</div>
+									</div>
+									<!-- /ErrorMessage -->
 
 				        </div>
         			</div>
