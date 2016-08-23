@@ -15,11 +15,17 @@ const isUrl = (url) => {
 	return !!url && pattern.test(url)
 }
 /**
- * Returns true if array is an Array
- * @param  {Any} array test argument
- * @return {Boolean}   test result
+ * Returns true if array is an Array.
+ * @param  {Any} array test argument.
+ * @return {Boolean}   test result.
  */
 const isArray = (array) => !!(array && Array === array.constructor)
+/**
+ * Returns true if the value is an empty string.
+ * @param  {Any} value Value to test.
+ * @return {Boolean}   Test result.
+ */
+const isEmpty = (value) => value === ''
 /**
  * Returns true if fn is a Function
  * @param  {Any} fn  test argument
@@ -46,6 +52,18 @@ const addEventListener = (element, event, handler) => {
 		element.attachEvent(event, callback)
 		return () => element.detachEvent(event, handler)
 	}
+}
+/**
+ * Checks if the provided element has a given class.
+ * @param  {Element} element   DOM element.
+ * @param  {String} className  Class name
+ * @return {Boolean}           True if element has that class.
+ */
+const hasClass = (element, className) => {
+	if (element.classList)
+	  element.classList.contains(className);
+	else
+  	new RegExp('(^| )' + className + '( |$)', 'gi').test(element.className);
 }
 /**
  * Adds a class to a given element.

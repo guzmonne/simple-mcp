@@ -14,6 +14,7 @@ const createDocument = () => ({
 const welcome = rewire('../dist/js/main.js')
 const isArray = welcome.__get__('isArray')
 const isUrl = welcome.__get__('isUrl')
+const isEmpty = welcome.__get__('isEmpty')
 const addClass = welcome.__get__('addClass')
 const removeClass = welcome.__get__('removeClass')
 const toggleClass = welcome.__get__('toggleClass')
@@ -194,6 +195,13 @@ suite('main.js', function(){
 		test('should return false if argument is not an array', function(){
 			const values = [undefined, null, '', 123, new Date(), {}, 'some string']
 			values.map(val => expect(isArray(val)).to.be.false)
+		})
+	})
+
+	suite('#isEmpty(value)', function(){
+		test('should return false if value is not a string', function(){
+			const values = [[], {}, new Date(), 1]
+			values.map(value => expect(isEmpty(value)).to.equal(false))
 		})
 	})
 

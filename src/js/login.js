@@ -6,33 +6,91 @@ const signupUrl = 'https://kvmveb8o06.execute-api.us-east-1.amazonaws.com/dev/au
  * @return {Void}
  */
 const toggleForms = ({signupForm, loginForm, socialIcons}) => {
-	if (!!signupForm) toggleClass(signupForm, 'hidden')
-	if (!!loginForm)  toggleClass(loginForm, 'hidden')
-	if (!!loginForm)  toggleClass(socialIcons, 'hidden')
+	if (signupForm) toggleClass(signupForm, 'hidden')
+	if (loginForm)  toggleClass(loginForm, 'hidden')
+	if (loginForm)  toggleClass(socialIcons, 'hidden')
 }
-
-const getUserDataFromForm = ({name, email, password, age, maleRadio, femaleRadio}) => Promise.resolve({
-	name: name.value,
-	email: email.value,
-	password: password.value,
-	age: JSON.parse(age.options[age.selectedIndex].value),
-	gender: !!maleRadio.checked ? 'male' : (!!femaleRadio.checked ? 'female' : undefined),
-})
-
+/**
+ * Toggles the buttons to show a login icon.
+ * @param  {Element} options.spinButton   Spin button element.
+ * @param  {Element} options.createButton Create button element.
+ * @return {Void}
+ */
+const toggleSignupButtons = ({spinButton, createButton}) => {
+	if (!!spinButton)   toggleClass(spinButton, 'hidden')
+	if (!!createButton) toggleClass(createButton, 'hidden')
+}
+/**
+ * Disables or enables the form.
+ * @param  {Object} el$ Object of DOM elements.
+ * @return {Void}
+ */
+const toggleForm = (el$) => {
+	const {name, email, password, age, maleRadio, femaleRadio} = el$
+	if (name)        name.disabled = !name.disabled
+	if (email)       email.disabled = !email.disabled
+	if (password)    password.disabled = !password.disabled
+	if (age)         age.disabled = !age.disabled
+	if (maleRadio)   maleRadio.disabled = !maleRadio.disabled
+	if (femaleRadio) femaleRadio.disabled = !femaleRadio.disabled
+	toggleSignupButtons(el$)
+}
+/**
+ * Hide alert boxes
+ * @param  {Element} options.mandatoryFieldsAlert Mandatory fields element.
+ * @param  {Element} options.userExistsAlert      User exists element.
+ * @return {Void}
+ */
+const hideAlerts = ({mandatoryFieldsAlert, userExistsAlert}) => {
+	if (!!mandatoryFieldsAlert && !hasClass(mandatoryFieldsAlert, 'hidden'))
+		addClass(mandatoryFieldsAlert, 'hidden')
+	if (!!userExistsAlert && !hasClass(userExistsAlert))
+		addClass(userExistsAlert, 'hidden') 
+}
+/**
+ * Removes the hidden class from the alert element.
+ * @param  {Element} alert Alert DOM element.
+ * @return {Void}
+ */
+const showAlert = (alert) => removeClass(alert, 'hidden')
+/**
+ * Gets the user data from the form.
+ * @param  {Element} options.name        Name input.
+ * @param  {Element} options.email       Email input.
+ * @param  {Element} options.password    Password input.
+ * @param  {Element} options.age         Age select.
+ * @param  {Element} options.maleRadio   Male radio.
+ * @param  {Element} options.femaleRadio Female radio.
+ * @return {Promise}                     Resolved promise with form data.
+ */
+const getUserDataFromForm = ({name, email, password, age, maleRadio, femaleRadio}) => 
+	Promise.resolve({
+		name: name.value,
+		email: email.value,
+		password: password.value,
+		age: JSON.parse(age.options[age.selectedIndex].value),
+		gender: !!maleRadio.checked ? 'male' : (!!femaleRadio.checked ? 'female' : undefined),
+	})
+/**
+ * Validate the user data. If one value is undefined
+ * then return a Rejected promise. Else returned a 
+ * Resolved promise with the user data.
+ * @param  {Object} data New user data.
+ * @return {Promise}     Resolved or rejected promise.
+ */
 const validateData = (data) => {
-	console.log(data)
-	return Promise.resolve(data)
+	const notValid = Object.keys(data)
+		.map(key => isEmpty(data[key]))
+		.reduce((acc, partial) => acc || partial, false)
+	return !!notValid ?
+		Promise.reject(new Error('Todos los campos son obligatorios.')) :
+		Promise.resolve(data) 
 }
-
-const createUser = (el$, event) => {
-	event.preventDefault()
-	getUserDataFromForm(el$)
-		.then(data => validateData(data))
-		.then(data => signupUser(data))
-		.then(json => console.log(json))
-		.catch(err => console.error(err))
-}
-
+/**
+ * Calls the lambda function.
+ * @param  {Object} data New user data.
+ * @return {Promise}     Lambda call promise.
+ */
 const signupUser = (data) => 
 	fetchLambda(signupUrl, {
 		method: 'POST',
@@ -42,6 +100,53 @@ const signupUser = (data) =>
 	  },
 		body: JSON.stringify(data),
 	})
+/**
+ * Submit handler. It:
+ * - grabs the user data from the form.
+ * - validates the user data.
+ * - calls the lambda function to create the user.
+ * - if the call succeeds log the result.
+ * - if the call fails throw an error.
+ * @param  {Object} el$   List of elements of interest.
+ * @param  {Object} event Event object.
+ * @return {Void}
+ */
+const createUser = (el$, event) => {
+	event.preventDefault()
+	toggleForm(el$)
+	hideAlerts(el$)
+	getUserDataFromForm(el$)
+		.then(data => validateData(data))
+		.then(data => signupUser(data))
+		.then(createUserSuccess.bind(this, el$))
+		.catch(createUserError.bind(this, el$))
+}
+/**
+ * createUser() success handler.
+ * @param  {Object} el$  Object with DOM elements.
+ * @param  {String} url  Welcome url.
+ * @return {Void}
+ */
+const createUserSuccess = (el$, url) => {
+	console.log(url)
+	toggleForm(el$)
+	window.location.href = url
+}
+/**
+ * createUser() error handler.
+ * @param  {Object} el$ Object with DOM elements.
+ * @param  {Error}  err Error object.
+ * @return {Void}
+ */
+const createUserError = (el$, err) => {
+	console.error(err)
+	const {userExistsAlert, mandatoryFieldsAlert} = el$
+	toggleForm(el$)
+	if (err.message === 'Todos los campos son obligatorios.')
+		showAlert(mandatoryFieldsAlert)
+	if (err.message === 'email is in use')
+		showAlert(userExistsAlert)
+}
 /**
  * Main page function.
  * TODO
@@ -55,18 +160,28 @@ const main = (document, window) => {
 	try {
 		// Setup
 		const ids = [
+			// Forms
 			'signupForm',
 			'loginForm',
+			// Page sections
 			'socialIcons',
+			'signupForm',
+			// Anchors
 			'showLoginForm',
 			'showSignupForm',
-			'signupForm',
+			// Form inputs
 			'name',
 			'email',
 			'password',
 			'maleRadio',
 			'femaleRadio',
 			'age',
+			// Buttons
+			'spinButton',
+			'createButton',
+			// Alerts
+			'mandatoryFieldsAlert',
+			'userExistsAlert',
 		]
 		const el$ = getElementsById(ids, document)
 		// Event Handlers

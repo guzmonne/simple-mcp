@@ -13,6 +13,7 @@
 
         <link rel="stylesheet" href="css/vendor/bootstrap.flatly.css">
         <link rel="stylesheet" href="css/vendor/icomoon.css">
+        <link rel="stylesheet" href="css/spinner.css">
         <link rel="stylesheet" href="css/main.css">
         <link rel="stylesheet" href="css/login.css">
 
@@ -98,6 +99,12 @@
 				            	<div class="col-xs-12">
 				            		<div style="margin-bottom: 20px"></div>
 				            		<div class="Signup__form-column col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+				            			<div id="mandatoryFieldsAlert" class="hidden alert alert-danger">
+				            				Todos los campos son obligatorios.
+				            			</div>
+				            			<div id="userExistsAlert" class="hidden alert alert-danger">
+				            				Usuario existente.
+				            			</div>
 					            		<form id="signupForm" class="Signup__Form">
 					            			<div class="row clearfix">
 				            					<!-- Nombre -->
@@ -164,7 +171,16 @@
 				            					<!-- -->
 				            					<!-- Buttons -->
 				                      <div class="col-xs-12">
-				                      	<button class="btn btn-red btn-block" type="submit">Crear usuario</button>
+				                      	<button id="spinButton" class="btn btn-red btn-block hidden" disabled>
+				                      		<div class="spinner">
+																	  <div class="bounce1"></div>
+																	  <div class="bounce2"></div>
+																	  <div class="bounce3"></div>
+																	</div>
+				                      	</button>
+				                      	<button id="createButton" class="btn btn-red btn-block" type="submit">
+				                      		Crear usuario
+			                      		</button>
 				                      	<a id="showLoginForm" href="javascript:void(0);" class="btn btn-block btn-link">
 																	Iniciar Sesión
 				                      	</a>
