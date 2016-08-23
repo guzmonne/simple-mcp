@@ -1,3 +1,4 @@
+const signupUrl = 'https://kvmveb8o06.execute-api.us-east-1.amazonaws.com/dev/authentication/signup'
 /**
  * Toggles the visible form
  * @param  {Element} options.signupForm Signup form element.
@@ -10,16 +11,37 @@ const toggleForms = ({signupForm, loginForm, socialIcons}) => {
 	if (!!loginForm)  toggleClass(socialIcons, 'hidden')
 }
 
-const createUser = ({name, email, age, maleRadio, femaleRadio}, event) => {
-	event.preventDefault()
-	const data = {
-		name: name.value,
-		email: email.value,
-		age: JSON.parse(age.options[age.selectedIndex].value),
-		gender: !!maleRadio.checked ? 'male' : (!!femaleRadio.checked ? 'female' : undefined),
-	}
+const getUserDataFromForm = ({name, email, password, age, maleRadio, femaleRadio}) => Promise.resolve({
+	name: name.value,
+	email: email.value,
+	password: password.value,
+	age: JSON.parse(age.options[age.selectedIndex].value),
+	gender: !!maleRadio.checked ? 'male' : (!!femaleRadio.checked ? 'female' : undefined),
+})
+
+const validateData = (data) => {
 	console.log(data)
+	return Promise.resolve(data)
 }
+
+const createUser = (el$, event) => {
+	event.preventDefault()
+	getUserDataFromForm(el$)
+		.then(data => validateData(data))
+		.then(data => signupUser(data))
+		.then(json => console.log(json))
+		.catch(err => console.error(err))
+}
+
+const signupUser = (data) => 
+	fetchLambda(signupUrl, {
+		method: 'POST',
+		headers: {
+	    'Accept': 'application/json',
+	    'Content-Type': 'application/json'
+	  },
+		body: JSON.stringify(data),
+	})
 /**
  * Main page function.
  * TODO
@@ -41,6 +63,7 @@ const main = (document, window) => {
 			'signupForm',
 			'name',
 			'email',
+			'password',
 			'maleRadio',
 			'femaleRadio',
 			'age',

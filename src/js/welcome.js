@@ -13,12 +13,8 @@ const profileUrl = (token, provider) =>
  * @param  {String} options.provider Provider value.
  * @return {Promise}                 Profile call promise.
  */
-const getProfile = ({token, provider}) => {
-	if (!fetch) return
-	return fetch(profileUrl(token, provider))
-		.then(parseJSON)
-		.then(checkError)
-}
+const getProfile = ({token, provider}) => 
+	fetchLambda(profileUrl(token, provider))
 /**
  * If the user profile is returned, update the welcome page:
  *  - hide authenticating spinner.

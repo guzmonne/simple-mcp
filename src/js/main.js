@@ -180,3 +180,16 @@ const checkError = (response) => {
  * @return {Object}          JSON response body.
  */
 const parseJSON = (response) => response.json()
+/**
+ * Wrapper function around fetch to simplify calls to
+ * Lambda functions through API Gateway
+ * @param  {String} url     URL.
+ * @param  {Object} options Fetch options.
+ * @return {Promise}        The fetch promise or an error wrapped in a promise.
+ */
+const fetchLambda = (url, options) => {
+	if (!fetch) return new Promise.reject(new Error('fetch is undefined'))
+	return fetch(url, options)
+		.then(parseJSON)
+		.then(checkError)
+}
