@@ -1,1 +1,1 @@
-{"version":3,"sources":["css/welcome.css"],"names":[],"mappings":"AAAA,WAAW;;CAEV;EACC,2BAA2B;EAC3B","file":"css/welcome.css","sourcesContent":[".Welcome {}\r\n\r\n\t.Welcome h4#profileName {\r\n\t\ttext-transform: capitalize;\r\n\t}"],"sourceRoot":"/source/"}
+{"version":3,"sources":["css/welcome.css"],"names":[],"mappings":"AAAA,WAAW;;CAEV;EACC,2BAA2B;EAC3B","file":"css/welcome.css","sourcesContent":[".Welcome {}\n\n\t.Welcome h4#profileName {\n\t\ttext-transform: capitalize;\n\t}"],"sourceRoot":"/source/"}

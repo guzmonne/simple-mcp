@@ -9,8 +9,21 @@
 		padding-top: 10px;
 	}
 
-		.Login .Login__form .control-label {
-			display: none;
+	.Login .control-label {
+		display: none;
+	}
+
+	.Login input[type=radio] {
+		transform: scale(2);
+	}
+
+	.Login .radio {
+    text-align: left;
+    margin: 10px 0 10px 50px;
+	}
+
+		.Login .radio span:before {
+			content: "\00a0\00a0 ";
 		}
 
 	.Login .Login__social {

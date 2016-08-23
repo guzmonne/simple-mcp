@@ -1,91 +1,34 @@
-const profileUrl = (token, provider) => `https://kvmveb8o06.execute-api.us-east-1.amazonaws.com/dev/authentication/profile/${token}?provider=${provider}`
-
-const isUrl = (url) => {
-	const pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-  '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|'+ // domain name
-  '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-  '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-  '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-  '(\\#[-a-z\\d_]*)?$','i')
-	return !!url && pattern.test(url)
-}
-
-const isArray = (array) => !!(array && Array === array.constructor)
-
-const isFunction = (fn) => {
-	const getClass = {}
-	return !!fn && getClass.toString.call(fn) === '[object Function]';
-}
-
-const addClass = (element, className) => {
-	if (!element)
-		return
-	else if (typeof element.classList === 'object') 
-		element.classList.add(className)
-	else
-		element.className += ' ' + className
-}
-
-const removeClass = (element, className) => {
-	if (!element)
-		return
-	else if (element.classList)
-		element.classList.remove(className)
-	else
-		element.className = element.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ')
-}
-
-const getParameterByName = (name, url) => {
-	if (!url) return;
-  name = name.replace(/[\[\]]/g, '\\$&');
-  var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-      results = regex.exec(url);
-  if (!results) return null;
-  if (!results[2]) return '';
-  return decodeURIComponent(results[2].replace(/\+/g, ' '));
-}
-
-const getElementsById = (ids, document) => {
-	if (!document || !ids) throw new Error('undefined arguments')
-	if (!isFunction(document.getElementById)) throw new Error('document.getElementById is not a function')
-	if (!isArray(ids)) throw new Error('ids is not an array')
-	return ids
-		.map(id => ({[id]: document.getElementById(id)}))
-		.reduce((acc, id) => Object.assign(acc, id), {})
-}
-
-const getParameters = (list, href) => {
-	if (!list || !href) throw new Error('undefined arguments')
-	if (!isArray(list)) throw new Error('list is not an array')
-	return list
-		.map(val => ({[val]: getParameterByName(val, href)}))
-		.reduce((acc, obj) => Object.assign(acc, obj), {})
-}
-
-function LambdaError(response) {
-	this.name = 'LambdaError'
-	this.message = response.errorMessage
-	this.stack = response.stackTrace
-}
-LambdaError.prototype = Object.create(Error.prototype)
-LambdaError.prototype.constructor = LambdaError
-
-const checkError = (response) => {
-	if (!!response.errorMessage) 
-		throw new LambdaError(response)
-	else
-		return response
-}
-
-const parseJSON = (response) => response.json()
-
+/**
+ * Builds the profile url from the provider and token values.
+ * @param  {String} token    Token value.
+ * @param  {String} provider Provider value.
+ * @return {String}          Provider Lambda URL.
+ */
+const profileUrl = (token, provider) =>
+	`https://kvmveb8o06.execute-api.us-east-1.amazonaws.com/dev/authentication/profile/${token}?provider=${provider}`
+/**
+ * Calls the Lambda endpoint for the user profile.
+ * If fetch() is undefined it returns.
+ * @param  {String} options.token    Token value.
+ * @param  {String} options.provider Provider value.
+ * @return {Promise}                 Profile call promise.
+ */
 const getProfile = ({token, provider}) => {
 	if (!fetch) return
 	return fetch(profileUrl(token, provider))
 		.then(parseJSON)
 		.then(checkError)
 }
-
+/**
+ * If the user profile is returned, update the welcome page:
+ *  - hide authenticating spinner.
+ *  - show welcome section.
+ *  - set the user name.
+ *  - set the user profile.
+ * @param  {Object} json User profile json information.
+ * @param  {Object} el$  Object of page elements.
+ * @return {Void}
+ */
 const getProfileSuccess = (json, el$) => {
 	if (!json || !el$) return
 	if (!!el$['authorizing'] && !!el$['welcome']) {
@@ -97,7 +40,14 @@ const getProfileSuccess = (json, el$) => {
 	if (!!el$['profileName'])	
 		el$['profileName'].innerHTML  = json.name || json.email || ''
 }
-
+/**
+ * If an error is returned from getProfile() call:
+ * - hide authorizing spinner.
+ * - show error message.
+ * @param  {Error}  err Lambda error.
+ * @param  {Object} el$ Object of page elements.
+ * @return {Void}
+ */
 const getProfileError = (err, el$) => {
 	console.error(err)
 	if (!!el$['errorMessage'] && !!el$['errorMessage']) {
@@ -105,18 +55,43 @@ const getProfileError = (err, el$) => {
 		removeClass(el$['errorMessage'], 'hidden')
 	}
 }
-
+/**
+ * Main page function.
+ * - gets the required page elements.
+ * - gets the query values from the url.
+ * - sets the authenticating spinner icon.
+ * - calls the getProfile() method.
+ *  - if the response is successful call getProfileSuccess()
+ *  - if the response is no successful call getProfileError()
+ *  - pass the list of page elements. 
+ * @param  {Object} document Page document object-
+ * @param  {Object} window   Page window object.
+ * @return {Void}
+ */
 const main = (document, window) => {
+	// Log error
 	try {
-		const ids = ['welcome', 'authorizing', 'icon', 'iconContainer', 'profilePicture', 'profileName', 'errorMessage']
+		// Setup
+		const ids = [
+			'welcome',
+			'authorizing',
+			'icon',
+			'iconContainer',
+			'profilePicture',
+			'profileName',
+			'errorMessage',
+		]
+		const parameters = [
+			'provider',
+			'token',
+		]
 		const el$ = getElementsById(ids, document)
-		const parameters = ['provider', 'token']
 		const query = getParameters(parameters, window.location.href)
-
+		// Set the authenticating spinner icon.
 		removeClass(el$['icon'], 'icon-wifi')
 		addClass(el$['icon'], `icon-${query['provider']}`)
 		addClass(el$['iconContainer'], query['provider'])
-
+		// Get the user profile.
 		getProfile(query)
 			.then(json => getProfileSuccess(json, el$))
 			.catch(err => getProfileError(err, el$))
@@ -124,5 +99,7 @@ const main = (document, window) => {
 		console.error(err)
 	}
 }
-
+/**
+ * Main page function.
+ */
 main(document, window)

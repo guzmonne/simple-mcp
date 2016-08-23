@@ -122,6 +122,13 @@ body {
  */
 .input-lg {
 	height: 55px;
+	padding: 15px 25px;
+}
+
+select.input-lg {
+	height: 55px;
+  line-height: 1.333333;
+  padding: 14px 25px;
 }
 
 /**

@@ -88,6 +88,7 @@ gulp.task('babel', () =>
 		.pipe(babel({
 			presets: ['es2015']
 		}))
+		.pipe(uglify())
 		.pipe(sourcemaps.write('.'))
 		.pipe(gulp.dest('dist'))
 )
