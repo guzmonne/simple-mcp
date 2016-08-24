@@ -35,7 +35,7 @@
 				              </div>
 				            </div>
 				            <!-- Social Icons -->
-				            <div id="socialIcons" class="row Login__social">
+				            <section id="socialSection" class="row Login__social">
 				              <div class="col-xs-12">
 				                <p>
 				                  Inicie su sesión con su red social preferida.
@@ -53,10 +53,10 @@
 				                  </a>
 				                </div>
 				              </div>
-				            </div>
+				            </section>
 				            <!-- /Social Icons -->
 				            <!-- Login Form -->
-				            <div id="loginForm" class="row Login__Form-row">
+				            <section id="signinSection" class="row Login__Form-row">
 				              <div class="col-xs-12">
 				                <p>... o ingrese sus datos.</p>
 				                <div class="Login__form-column col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
@@ -82,9 +82,12 @@
 				                          </div>
 				                        </div>
 				                      </div>
+				                      <div class="col-xs-12 col-sm-6 Login__forgot-password">
+				                      	<a href="javascript:void(0);" class="text-red">¿Olvido su contraseña?</a>
+				                      </div>
 				                      <div class="col-xs-12">
 				                      	<button id="signinUser" class="btn btn-red btn-block" type="submit">Iniciar Sesión</button>
-				                      	<a id="showSignupForm" href="javascript:void(0);" class="btn btn-block btn-link">
+				                      	<a id="showSignupSection" href="#signupForm" class="btn btn-block btn-link">
 																	Nuevo usuario
 				                      	</a>
 				                      </div>
@@ -92,10 +95,10 @@
 				                  </form>
 				                </div> 
 				              </div>
-				            </div>
+				            </section>
 				            <!-- /Login Form -->
 				            <!-- Signup Form -->
-				            <div id="signupForm" class="row Signup hidden">
+				            <section id="signupSection" class="row Signup hidden">
 				            	<div class="col-xs-12">
 				            		<div style="margin-bottom: 20px"></div>
 				            		<div class="Signup__form-column col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
@@ -181,7 +184,7 @@
 				                      	<button id="createButton" class="btn btn-red btn-block" type="submit">
 				                      		Crear usuario
 			                      		</button>
-				                      	<a id="showLoginForm" href="javascript:void(0);" class="btn btn-block btn-link">
+				                      	<a id="showSigninSection" href="#loginUser" class="btn btn-block btn-link">
 																	Iniciar Sesión
 				                      	</a>
 				                      </div>
@@ -190,7 +193,7 @@
 					            		</form>
 				            		</div>
 				            	</div>
-				            </div>
+				            </section>
 				            <!-- /Signup Form -->
 				          </div>
 				        </div>

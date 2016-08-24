@@ -55,3 +55,8 @@
 		display: block;
 		text-decoration: underline;
 	}
+
+	.Login .Login__forgot-password {
+		margin-top: -10px;
+		margin-bottom: 10px;
+	}

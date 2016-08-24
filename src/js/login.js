@@ -1,14 +1,15 @@
 const signupUrl = 'https://kvmveb8o06.execute-api.us-east-1.amazonaws.com/dev/authentication/signup'
 /**
- * Toggles the visible form
- * @param  {Element} options.signupForm Signup form element.
- * @param  {Element} options.loginForm  Login form element.
+ * Toggles the visible section
+ * @param  {Element} options.signupSection Signup section element.
+ * @param  {Element} options.signinSection Login section element.
+ * @param  {Element} options.socialSection Social login section element.
  * @return {Void}
  */
-const toggleForms = ({signupForm, loginForm, socialIcons}) => {
-	if (signupForm) toggleClass(signupForm, 'hidden')
-	if (loginForm)  toggleClass(loginForm, 'hidden')
-	if (loginForm)  toggleClass(socialIcons, 'hidden')
+const toggleSections = ({signupSection, signinSection, socialSection}) => {
+	if (signupSection) toggleClass(signupSection, 'hidden')
+	if (signinSection) toggleClass(signinSection, 'hidden')
+	if (socialSection) toggleClass(socialSection, 'hidden')
 }
 /**
  * Toggles the buttons to show a login icon.
@@ -160,15 +161,16 @@ const main = (document, window) => {
 	try {
 		// Setup
 		const ids = [
+			// Sections
+			'signupSection',
+			'signinSection',
+			'socialSection',
 			// Forms
 			'signupForm',
 			'loginForm',
-			// Page sections
-			'socialIcons',
-			'signupForm',
 			// Anchors
-			'showLoginForm',
-			'showSignupForm',
+			'showSigninSection',
+			'showSignupSection',
 			// Form inputs
 			'name',
 			'email',
@@ -185,11 +187,11 @@ const main = (document, window) => {
 		]
 		const el$ = getElementsById(ids, document)
 		// Event Handlers
-		const toggleFormsHandler = toggleForms.bind(this, el$)
+		const toggleSectionHandler = toggleSections.bind(this, el$)
 		const createUserHandler = createUser.bind(this, el$)
 		// Set event listeners
-		addEventListener(el$['showLoginForm'], 'click', toggleFormsHandler)
-		addEventListener(el$['showSignupForm'], 'click', toggleFormsHandler)
+		addEventListener(el$['showSigninSection'], 'click', toggleSectionHandler)
+		addEventListener(el$['showSignupSection'], 'click', toggleSectionHandler)
 		addEventListener(el$['signupForm'], 'onsubmit', createUserHandler)
 	} catch (err) {
 		console.error(err)
