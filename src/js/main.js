@@ -1,3 +1,13 @@
+ 
+const map = (array, fn) => {
+	const result = []
+	if (!array || !array.length) return result
+	if (!isFunction(fn)) return result
+	for (let i = 0; i < array.length; i++){
+		result.push(fn(array[i], i, array))
+	}
+	return result
+}
 /**
  * Returns true if url has a url format
  * TODO

@@ -17,7 +17,7 @@ const toggleSections = ({signupSection, signinSection, socialSection}) => {
  * @param  {Element} options.createButton Create button element.
  * @return {Void}
  */
-const toggleSignupButtons = ({spinButton, createButton}) => {
+const toggleButtons = ({spinButton, createButton}) => {
 	if (!!spinButton)   toggleClass(spinButton, 'hidden')
 	if (!!createButton) toggleClass(createButton, 'hidden')
 }
@@ -34,7 +34,6 @@ const toggleForm = (el$) => {
 	if (age)         age.disabled = !age.disabled
 	if (maleRadio)   maleRadio.disabled = !maleRadio.disabled
 	if (femaleRadio) femaleRadio.disabled = !femaleRadio.disabled
-	toggleSignupButtons(el$)
 }
 /**
  * Hide alert boxes
@@ -64,7 +63,7 @@ const showAlert = (alert) => removeClass(alert, 'hidden')
  * @param  {Element} options.femaleRadio Female radio.
  * @return {Promise}                     Resolved promise with form data.
  */
-const getUserDataFromForm = ({name, email, password, age, maleRadio, femaleRadio}) => 
+const getUserDataFromSignupForm = ({name, email, password, age, maleRadio, femaleRadio}) => 
 	Promise.resolve({
 		name: name.value,
 		email: email.value,
@@ -101,6 +100,16 @@ const signupUser = (data) =>
 	  },
 		body: JSON.stringify(data),
 	})
+
+const loginUser = (el$, event) => {
+	event.preventDefault()
+	toggleButtons(el$)
+	const {loginForm} = el$
+	const data = map(loginForm.getElementsByClassName('form-control'), input => 
+		({[input.name]: input.value})
+	)
+	console.log(data)
+}
 /**
  * Submit handler. It:
  * - grabs the user data from the form.
@@ -114,9 +123,10 @@ const signupUser = (data) =>
  */
 const createUser = (el$, event) => {
 	event.preventDefault()
+	toggleButtons(el$)
 	toggleForm(el$)
 	hideAlerts(el$)
-	getUserDataFromForm(el$)
+	getUserDataFromSignupForm(el$)
 		.then(data => validateData(data))
 		.then(data => signupUser(data))
 		.then(createUserSuccess.bind(this, el$))
@@ -189,10 +199,12 @@ const main = (document, window) => {
 		// Event Handlers
 		const toggleSectionHandler = toggleSections.bind(this, el$)
 		const createUserHandler = createUser.bind(this, el$)
+		const loginUserHandler = loginUser.bind(this, el$)
 		// Set event listeners
 		addEventListener(el$['showSigninSection'], 'click', toggleSectionHandler)
 		addEventListener(el$['showSignupSection'], 'click', toggleSectionHandler)
 		addEventListener(el$['signupForm'], 'onsubmit', createUserHandler)
+		addEventListener(el$['loginForm'], 'onsubmit', loginUserHandler)
 	} catch (err) {
 		console.error(err)
 	}

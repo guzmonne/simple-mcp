@@ -11,16 +11,17 @@ const createDocument = () => ({
 	getElementById: function(){return classList()}
 })
 
-const welcome = rewire('../dist/js/main.js')
-const isArray = welcome.__get__('isArray')
-const isUrl = welcome.__get__('isUrl')
-const isEmpty = welcome.__get__('isEmpty')
-const addClass = welcome.__get__('addClass')
-const removeClass = welcome.__get__('removeClass')
-const toggleClass = welcome.__get__('toggleClass')
-const getElementsById = welcome.__get__('getElementsById')
-const getParameters = welcome.__get__('getParameters')
-const getParameterByName = welcome.__get__('getParameterByName')
+const main = rewire('../dist/js/main.js')
+const map = main.__get__('map')
+const isArray = main.__get__('isArray')
+const isUrl = main.__get__('isUrl')
+const isEmpty = main.__get__('isEmpty')
+const addClass = main.__get__('addClass')
+const removeClass = main.__get__('removeClass')
+const toggleClass = main.__get__('toggleClass')
+const getElementsById = main.__get__('getElementsById')
+const getParameters = main.__get__('getParameters')
+const getParameterByName = main.__get__('getParameterByName')
 
 suite('main.js', function(){
 
@@ -202,6 +203,26 @@ suite('main.js', function(){
 		test('should return false if value is not a string', function(){
 			const values = [[], {}, new Date(), 1]
 			values.map(value => expect(isEmpty(value)).to.equal(false))
+		})
+	})
+
+	suite('#map(array, function)', function(){
+		test('should return an empty array if the "array" does not have a length property', function(){
+			const values = [undefined, null, {}, 'string', 3, function(){}]
+			values.map(v => expect(JSON.stringify(map(v))).to.equal(JSON.stringify([])))
+		})
+
+		test('should return an emtpy array if "fn" is not a function', function(){
+			const values = [undefined, null, {}, 'string', 3, []]
+			values.map(v => expect(JSON.stringify(map([], v))).to.equal(JSON.stringify([])))
+		})
+
+		test('should iterate over all the values running the "fn" function through each, and returning a new array with each result', function(){
+			const values = [1, 2, 3, 4, 5]
+			const duplicate = x => x * 2
+			const actual = JSON.stringify(map(values, duplicate))
+			const expected = JSON.stringify([2, 4, 6, 8, 10])
+			expect(actual).to.equal(expected)
 		})
 	})
 
