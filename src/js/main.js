@@ -213,7 +213,7 @@ const parseJSON = (response) => response.json()
  * Lambda functions through API Gateway
  * @param  {String} url     URL.
  * @param  {Object} options Fetch options.
- * @return {Promise}        The fetch promise or an error wrapped in a promise.
+ * @return {Promise}        The fetch promise.
  */
 const fetchLambda = (url, options) => {
 	if (!fetch) return new Promise.reject(new Error('fetch is undefined'))
@@ -221,3 +221,21 @@ const fetchLambda = (url, options) => {
 		.then(parseJSON)
 		.then(checkError)
 }
+/**
+ * Wrapper function around fetchLambda to simplify calls
+ * to Lambda functions asking for JSON objects providing 
+ * some information inside the body..
+ * @param  {String} url            Lambda function URL.
+ * @param  {Any}    body           Fetch JSON body.
+ * @param  {String} options.method One of POST, GET, PUT, DESTROY
+ * @return {Promise}               The fetch promise.
+ */
+const fetchJSONLambda = (url, body, options) => 
+	fetchLambda(url, {
+		method: !!options && !!options.method ? options.method : 'POST',
+		headers: {
+	    'Accept': 'application/json',
+	    'Content-Type': 'application/json'
+	  },
+		body: JSON.stringify(body),
+	})

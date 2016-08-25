@@ -1,4 +1,6 @@
-const signupUrl = 'https://kvmveb8o06.execute-api.us-east-1.amazonaws.com/dev/authentication/signup'
+const mainUrl = 'https://kvmveb8o06.execute-api.us-east-1.amazonaws.com/dev'
+const signupUrl = `${mainUrl}/authentication/signup`
+const signinUrl = `${mainUrl}/authentication/login`
 /**
  * Toggles the visible section
  * @param  {Element} options.signupSection Signup section element.
@@ -17,23 +19,21 @@ const toggleSections = ({signupSection, signinSection, socialSection}) => {
  * @param  {Element} options.createButton Create button element.
  * @return {Void}
  */
-const toggleButtons = ({spinButton, createButton}) => {
-	if (!!spinButton)   toggleClass(spinButton, 'hidden')
-	if (!!createButton) toggleClass(createButton, 'hidden')
-}
+const toggleButtons = () =>
+	map(document.forms, form => 
+		map([...form.getElementsByTagName('button'), ...form.getElementsByTagName('a')], 
+			button => toggleClass(button, 'hidden')))
 /**
  * Disables or enables the form.
  * @param  {Object} el$ Object of DOM elements.
  * @return {Void}
  */
 const toggleForm = (el$) => {
-	const {name, email, password, age, maleRadio, femaleRadio} = el$
-	if (name)        name.disabled = !name.disabled
-	if (email)       email.disabled = !email.disabled
-	if (password)    password.disabled = !password.disabled
-	if (age)         age.disabled = !age.disabled
-	if (maleRadio)   maleRadio.disabled = !maleRadio.disabled
-	if (femaleRadio) femaleRadio.disabled = !femaleRadio.disabled
+	map(document.forms, 
+		form => map(form.getElementsByClassName('form-control'), 
+			input => input.disabled = !input.disabled))
+	toggleButtons()
+	hideAlerts(el$)
 }
 /**
  * Hide alert boxes
@@ -72,6 +72,18 @@ const getUserDataFromSignupForm = ({name, email, password, age, maleRadio, femal
 		gender: !!maleRadio.checked ? 'male' : (!!femaleRadio.checked ? 'female' : undefined),
 	})
 /**
+ * Gets the user data from the loginForm
+ * @param  {Element} options.loginForm Login form element.
+ * @return {Void}
+ */
+const getUserDataFromLoginForm = ({loginForm}) => 
+	Promise.resolve(
+		map(loginForm.getElementsByClassName('form-control'), input => 
+			({[input.name]: input.value})
+		).reduce((acc, input) => Object.assign(acc, input), {})
+	)
+	
+/**
  * Validate the user data. If one value is undefined
  * then return a Rejected promise. Else returned a 
  * Resolved promise with the user data.
@@ -87,35 +99,48 @@ const validateData = (data) => {
 		Promise.resolve(data) 
 }
 /**
- * Calls the lambda function.
+ * Calls the signup Lambda function.
  * @param  {Object} data New user data.
  * @return {Promise}     Lambda call promise.
  */
-const signupUser = (data) => 
-	fetchLambda(signupUrl, {
-		method: 'POST',
-		headers: {
-	    'Accept': 'application/json',
-	    'Content-Type': 'application/json'
-	  },
-		body: JSON.stringify(data),
-	})
-
+const signupUser = (data) => fetchJSONLambda(signupUrl, data)
+/**
+ * Calls the login Lambda function.
+ * @param  {Object} data New user data.
+ * @return {Promise}     Lambda call promise.
+ */
+const signinUser = (data) => fetchJSONLambda(signinUrl, data)
+/**
+ * Login handler. It:
+ * - grabs the user data from the login form.
+ * - validates the user data.
+ * - calls the lambda function to login the user.
+ * - if the call succeeds redirect to welcome page.
+ * - if the call fails throw an error.
+ * @param  {Object} el$   List of elements of interest.
+ * @param  {Object} event Event object.
+ * @return {Void}
+ */
 const loginUser = (el$, event) => {
 	event.preventDefault()
-	toggleButtons(el$)
-	const {loginForm} = el$
-	const data = map(loginForm.getElementsByClassName('form-control'), input => 
-		({[input.name]: input.value})
-	)
-	console.log(data)
+	toggleForm(el$)
+	getUserDataFromLoginForm(el$)
+		.then(data => validateData(data))
+		.then(data => signinUser(data))
+		.then(lambdaCallSuccess.bind(null, el$))
+		.catch(loginUserError.bind(null, el$))
+}
+
+const loginUserError = (el$, err) => {
+	console.error(err)
+	toggleForm(el$)
 }
 /**
  * Submit handler. It:
  * - grabs the user data from the form.
  * - validates the user data.
  * - calls the lambda function to create the user.
- * - if the call succeeds log the result.
+ * - if the call succeeds redirect to welcome page.
  * - if the call fails throw an error.
  * @param  {Object} el$   List of elements of interest.
  * @param  {Object} event Event object.
@@ -123,14 +148,12 @@ const loginUser = (el$, event) => {
  */
 const createUser = (el$, event) => {
 	event.preventDefault()
-	toggleButtons(el$)
 	toggleForm(el$)
-	hideAlerts(el$)
 	getUserDataFromSignupForm(el$)
 		.then(data => validateData(data))
 		.then(data => signupUser(data))
-		.then(createUserSuccess.bind(this, el$))
-		.catch(createUserError.bind(this, el$))
+		.then(lambdaCallSuccess.bind(null, el$))
+		.catch(createUserError.bind(null, el$))
 }
 /**
  * createUser() success handler.
@@ -138,7 +161,7 @@ const createUser = (el$, event) => {
  * @param  {String} url  Welcome url.
  * @return {Void}
  */
-const createUserSuccess = (el$, url) => {
+const lambdaCallSuccess = (el$, url) => {
 	console.log(url)
 	toggleForm(el$)
 	window.location.href = url
