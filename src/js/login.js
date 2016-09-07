@@ -217,15 +217,22 @@ const main = (document, window) => {
 			// Alerts
 			'mandatoryFieldsAlert',
 			'userExistsAlert',
+			// Anchors
+			'google',
+			'facebook',
 		]
 		const parameters = [
 			'node_mac',
 			'client_ip',
 			'client_mac',
-			'base_grant_user',
+			'base_grant_url',
 		]
 		const el$ = getElementsById(ids, document)
 		const query = getParameters(parameters, window.location.href)
+		// Modify anchors href value
+		el$['facebook'].href = encodeURI(urlBuilder(el$['facebook'].href, query))
+		el$['google'].href = encodeURI(urlBuilder(el$['google'].href, query))
+		console.log(encodeURI(urlBuilder(el$['facebook'].href, query)))
 		// Event Handlers
 		const toggleSectionHandler = toggleSections.bind(this, el$)
 		const createUserHandler = createUser.bind(this, el$)

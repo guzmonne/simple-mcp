@@ -46,6 +46,23 @@ const isFunction = (fn) => {
 	return !!fn && getClass.toString.call(fn) === '[object Function]';
 }
 /**
+ * Convert a camelized string into a lowercased one with a custom separator
+ * Example: unicornRainbow → unicorn_rainbow
+ * @param  {String} string    String to convert.
+ * @param  {String} separator Separator.
+ * @return {String}           Decamelized string.
+ */
+const decamelize = (string, separator) => {
+	if (typeof string !== 'string') {
+		throw new TypeError('Expected a string');
+	}
+	separator = typeof separator === 'undefined' ? '_' : separator;
+	return string
+		.replace(/([a-z\d])([A-Z])/g, '$1' + separator + '$2')
+		.replace(/([A-Z]+)([A-Z][a-z\d]+)/g, '$1' + separator + '$2')
+		.toLowerCase();
+};
+/**
  * Creates &amp; separated params string
  * @param params {object}
  */
