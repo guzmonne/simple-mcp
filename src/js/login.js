@@ -223,7 +223,6 @@ const main = (document, window) => {
 			'client_ip',
 			'client_mac',
 			'base_grant_user',
-			'user_continue_url',
 		]
 		const el$ = getElementsById(ids, document)
 		const query = getParameters(parameters, window.location.href)
