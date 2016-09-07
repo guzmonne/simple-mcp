@@ -27,14 +27,17 @@ const getProfile = ({token, provider}) =>
  */
 const getProfileSuccess = (json, el$) => {
 	if (!json || !el$) return
-	if (!!el$['authorizing'] && !!el$['welcome']) {
-		addClass(el$['authorizing'], 'hidden')
-		removeClass(el$['welcome'], 'hidden')
+	const {authorizing, welcome, profilePicture, profileName, baseGrantUrl} = el$
+	if (!!authorizing && !!welcome) {
+		addClass(authorizing, 'hidden')
+		removeClass(welcome, 'hidden')
 	}
-	if (!!el$['profilePicture'])
-		el$['profilePicture'].src = json.picture || 'http://placehold.it/50x50'
-	if (!!el$['profileName'])	
-		el$['profileName'].innerHTML  = json.name || json.email || ''
+	if (!!profilePicture)
+		profilePicture.src = json.picture || 'http://placehold.it/50x50'
+	if (!!profileName)	
+		profileName.innerHTML = json.name || json.email || ''
+	if (!!baseGrantUrl)
+		baseGrantUrl.href = json.baseGrantUrl
 }
 /**
  * If an error is returned from getProfile() call:
@@ -76,6 +79,7 @@ const main = (document, window) => {
 			'profilePicture',
 			'profileName',
 			'errorMessage',
+			'baseGrantUrl',
 		]
 		const parameters = [
 			'provider',
