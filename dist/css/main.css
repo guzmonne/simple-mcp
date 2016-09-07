@@ -25,6 +25,30 @@ body {
 	background-image: url(../images/supermarket.jpg);
 }
 
+	@media (max-width: 256px) {
+		.Container {
+			background-image: url(../images/supermarket_256.jpg)
+		}
+	}
+
+	@media (max-width: 512px) {
+		.Container {
+			background-image: url(../images/supermarket_512.jpg)
+		}
+	}
+
+	@media (max-width: 1024px) {
+		.Container {
+			background-image: url(../images/supermarket_1024.jpg)
+		}
+	}
+
+	@media (max-width: 2048px) {
+		.Container {
+			background-image: url(../images/supermarket_1024.jpg)
+		}
+	}
+
 	.Container .Container__hero {
 		height: 100%;
 		color: #fff;

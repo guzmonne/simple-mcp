@@ -109,7 +109,7 @@ const signupUser = (data) => fetchJSONLambda(signupUrl, data)
  * @param  {Object} data New user data.
  * @return {Promise}     Lambda call promise.
  */
-const signinUser = (data) => fetchJSONLambda(signinUrl, data)
+const signinUser = (data, query) => fetchJSONLambda(urlBuilder(signinUrl, query), data)
 /**
  * Login handler. It:
  * - grabs the user data from the login form.
@@ -121,12 +121,12 @@ const signinUser = (data) => fetchJSONLambda(signinUrl, data)
  * @param  {Object} event Event object.
  * @return {Void}
  */
-const loginUser = (el$, event) => {
+const loginUser = (el$, query, event) => {
 	event.preventDefault()
 	toggleForm(el$)
 	getUserDataFromLoginForm(el$)
 		.then(data => validateData(data))
-		.then(data => signinUser(data))
+		.then(data => signinUser(data, query))
 		.then(lambdaCallSuccess.bind(null, el$))
 		.catch(loginUserError.bind(null, el$))
 }
@@ -218,11 +218,19 @@ const main = (document, window) => {
 			'mandatoryFieldsAlert',
 			'userExistsAlert',
 		]
+		const parameters = [
+			'node_mac',
+			'client_ip',
+			'client_mac',
+			'base_grant_user',
+			'user_continue_url',
+		]
 		const el$ = getElementsById(ids, document)
+		const query = getParameters(parameters, window.location.href)
 		// Event Handlers
 		const toggleSectionHandler = toggleSections.bind(this, el$)
 		const createUserHandler = createUser.bind(this, el$)
-		const loginUserHandler = loginUser.bind(this, el$)
+		const loginUserHandler = loginUser.bind(this, el$, query)
 		// Set event listeners
 		addEventListener(el$['showSigninSection'], 'click', toggleSectionHandler)
 		addEventListener(el$['showSignupSection'], 'click', toggleSectionHandler)

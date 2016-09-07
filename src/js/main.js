@@ -46,6 +46,24 @@ const isFunction = (fn) => {
 	return !!fn && getClass.toString.call(fn) === '[object Function]';
 }
 /**
+ * Creates &amp; separated params string
+ * @param params {object}
+ */
+const urlParams = (params) => Object.keys(params)
+	.reduce((result, key) => {
+		const decamelKey = decamelize(key)
+		const value      = params[key]
+		return params.hasOwnProperty(key) ? 
+			result.concat(`${decamelKey}=${value}`) : result
+	}, [])
+	.join('&')
+/**
+ * Creates url with params
+ * @param url {string} url base
+ * @param params {object} url params
+ */
+const urlBuilder = (url, params) => `${url}?${urlParams(params)}`
+/**
  * Adds an event listener to a document element and
  * returns a function to disable the event listener.
  * @param  {Element}  element Document element.
